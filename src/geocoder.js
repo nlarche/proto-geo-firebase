@@ -1,6 +1,5 @@
 import geocoder from 'google-geocoder';
-
-const GOOGLE_API_KEY = 'AIzaSyDn3oeIK6Cyw4XpprF4dVfd9U1F36b6KrE';
+import { GOOGLE_API_KEY } from './configuration.js';
 
 const geo = geocoder({
     key: GOOGLE_API_KEY,
