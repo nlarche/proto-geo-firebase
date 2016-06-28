@@ -14,7 +14,7 @@ var config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['babel'],
+        loaders: ['babel', 'eslint'],
       },
     ],
   },
@@ -28,5 +28,13 @@ var config = {
       path.join(__dirname, 'node_modules'),
     ],
   },
+  devtool: 'source-map',
+    devServer: {
+        contentBase: "./www",
+        colors: true,
+        historyApiFallback: true,
+        inline: true,
+        port: 3001,
+    }
 };
 module.exports = config;
