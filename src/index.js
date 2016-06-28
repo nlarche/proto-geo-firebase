@@ -18,7 +18,7 @@ const adresses = [
         lat: adresse.lattitude,
         long: adresse.longitude,
         geohash: Geohash.encode(adresse.lattitude, adresse.longitude)
-    }
+    };
 });
 
 // Initialize the Firebase SDK
