@@ -9,7 +9,7 @@ export default function getCoordinates(adresse, callBack) {
     return geo.find(adresse, function (err, res) {
         callBack(res.map(function (geoplace) {
             return {
-                lattitude: geoplace.location.lat,
+                latitude: geoplace.location.lat,
                 longitude: geoplace.location.lng,
             };
         }));

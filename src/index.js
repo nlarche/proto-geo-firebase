@@ -1,25 +1,11 @@
 import firebase from 'firebase';
 import GeoFire from 'geofire';
-import Geohash from 'latlon-geohash';
+
+import init from './initData.js';
+import currentPosition from './currentPosition.js';
 import geocoder from './geocoder.js';
+
 import { FIREBASE_API_KEY, FIREBASE_URL } from './configuration.js';
-
-// geocoder('56 rue des dervallières 44000 Nantes', function(test){
-//     console.log(test[0]);
-// });
-
-const adresses = [
-    { lattitude: 47.22072319999999, longitude: -1.5768232 },
-    { lattitude: 46.46505579999999, longitude: -0.8080927999999999 },
-    { lattitude: 47.2304537, longitude: -1.6309762 },
-    { lattitude: 47.2224769, longitude: -1.5802106 },
-].map(function (adresse) {
-    return {
-        lat: adresse.lattitude,
-        long: adresse.longitude,
-        geohash: Geohash.encode(adresse.lattitude, adresse.longitude)
-    };
-});
 
 // Initialize the Firebase SDK
 firebase.initializeApp({
@@ -33,25 +19,39 @@ const firebaseRef = firebase.database().ref();
 // Create a new GeoFire instance at the random Firebase location
 const geoFire = new GeoFire(firebaseRef);
 
-// Set the initial locations of the fish in GeoFire
-console.log("*** Setting initial locations ***");
-adresses.map(function (adresse) {
-    return geoFire.set(adresse.geohash, [adresse.lat, adresse.long]).then(function () {
-        console.log('success');
+init(geoFire);
+
+let geoQuery;
+currentPosition(function (position) {
+
+    geoQuery = geoFire.query({
+        center: [position.latitude, position.longitude],
+        radius: 5
     });
+
+    geoQuery.on("key_entered", resultQuery);
 });
 
-// update
-// geoQuery.updateCriteria({
-//         center: [lat, lon],
-//         radius: radius
-//       });
+const input = document.getElementById("input");
+input.addEventListener("change", function (event) {
 
-const geoQuery = geoFire.query({
-    center: [adresses[0].lat, adresses[0].long],
-    radius: 2
+    const address = event.target.value;
+
+    if (address) {
+        geocoder(address, function (coords) {
+
+            geoQuery.updateCriteria({
+                center: [coords[0].latitude, coords[0].longitude],
+                radius: 5
+            });
+        });
+    }
+
 });
 
-geoQuery.on("key_entered", function (key, location, distance) {
+
+function resultQuery(key, location, distance) {
     console.log(key + " is located at [" + location + "] which is within the query (" + distance.toFixed(2) + " km from center)");
-});
+}
+
+
