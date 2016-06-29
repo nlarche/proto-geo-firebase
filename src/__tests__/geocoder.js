@@ -1,7 +1,7 @@
 import test from 'ava';
 import { expect } from 'chai';
 
-import geocoder from './geocoder.js';
+import geocoder from '../geocoder.js';
 
 test.cb('geocoder', t => {
 
@@ -10,7 +10,7 @@ test.cb('geocoder', t => {
         expect(test[0]).to.have.property('lattitude');
         expect(test[0]).to.have.property('longitude');        
         expect(test[0].longitude).to.be.a('number');
-        expect(test[0].longitude).to.be('number');
+        expect(test[0].longitude).to.be.a('number');
         t.end();
     });
 });
