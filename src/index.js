@@ -26,7 +26,7 @@ currentPosition(function (position) {
 
     geoQuery = geoFire.query({
         center: [position.latitude, position.longitude],
-        radius: 5
+        radius: 2
     });
 
     geoQuery.on("key_entered", resultQuery);
@@ -51,7 +51,14 @@ input.addEventListener("change", function (event) {
 
 
 function resultQuery(key, location, distance) {
-    console.log(key + " is located at [" + location + "] which is within the query (" + distance.toFixed(2) + " km from center)");
+
+    firebaseRef.child("locations").child(key).once("value", function (dataSnapshot) {
+       
+        const location = dataSnapshot.val();
+
+        console.log(key + " is located at [" + location.info.address + "] which is within the query (" + distance.toFixed(2) + " km from center)");
+
+    });
 }
 
 
