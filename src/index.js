@@ -17,9 +17,9 @@ firebase.initializeApp({
 const firebaseRef = firebase.database().ref();
 
 // Create a new GeoFire instance at the random Firebase location
-const geoFire = new GeoFire(firebaseRef);
+const geoFire = new GeoFire(firebaseRef.child("_geofire"));
 
-init(geoFire);
+init(firebaseRef, geoFire);
 
 let geoQuery;
 currentPosition(function (position) {
