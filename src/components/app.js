@@ -8,6 +8,8 @@ import init from '../initData.js';
 import currentPosition from '../currentPosition.js';
 import geocoder from '../geocoder.js';
 
+import MapMarker from './map-marker.js';
+
 import { FIREBASE_API_KEY, FIREBASE_URL, GOOGLE_API_KEY } from '../configuration.js';
 
 // Initialize the Firebase SDK
@@ -129,11 +131,11 @@ class App extends React.Component {
                     center={this.state.center}
                     >
                     { this.state.data.map((d) => {
-                        return <div key={d.key}
+                        return <MapMarker key={d.key}
                             lat={d.latitude}
-                            lng={d.longitude}>
-                            {d.location.info.address}
-                        </div>;
+                            lng={d.longitude}
+                            marker={d}
+                            />;
                     }) }
                 </GoogleMap>
             </div >
