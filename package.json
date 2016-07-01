@@ -37,6 +37,7 @@
     "firebase": "^3.0.5",
     "geofire": "^4.1.1",
     "google-geocoder": "^0.1.4",
+    "google-map-react": "^0.15.0",
     "latlon-geohash": "^1.0.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0"
