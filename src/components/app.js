@@ -20,9 +20,12 @@ const firebaseRef = firebase.database().ref();
 
 // Create a new GeoFire instance at the random Firebase location
 const geoFire = new GeoFire(firebaseRef.child("_geofire"));
-let geoQuery;
-
 init(firebaseRef, geoFire);
+
+let geoQuery = geoFire.query({
+    center: [0, 0],
+    radius: 5
+});
 
 class App extends React.Component {
     constructor(props) {
@@ -31,7 +34,7 @@ class App extends React.Component {
             data: []
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleResult = this.handleResult.bind(this);          
+        this.handleResult = this.handleResult.bind(this);        
     }
     handleResult(key, location, distance) {
 
@@ -39,7 +42,7 @@ class App extends React.Component {
 
         firebaseRef.child("locations").child(key).once("value", (dataSnapshot) => {
 
-            const location = dataSnapshot.val();        
+            const location = dataSnapshot.val();
 
             data.push(location);
 
@@ -55,26 +58,24 @@ class App extends React.Component {
         this.refs.form.reset();
         this.refs.input.focus();
 
+        this.setState({ data: [] });
+
         geocoder(text, (coords) => {
 
             geoQuery.updateCriteria({
-                center: [coords[0].latitude, coords[0].longitude],
-                radius: 5
+                center: [coords[0].latitude, coords[0].longitude],                
             });
         });
     }
     componentDidMount() {
 
-        const handleResult = this.handleResult;
+        geoQuery.on("key_entered", this.handleResult);        
 
-        currentPosition((position) => {
+        currentPosition((position) => {            
 
-            geoQuery = geoFire.query({
-                center: [position.latitude, position.longitude],
-                radius: 2
-            });
-
-            geoQuery.on("key_entered", handleResult);
+            geoQuery.updateCriteria({
+                center: [position.latitude, position.longitude],                
+            });            
         });
     }
 
@@ -85,7 +86,7 @@ class App extends React.Component {
                     <input type="text" ref="input" placeholder="address" />
                 </form>
                 { this.state.data.map((d) => {
-                    <span>d.info.address</span>;
+                    return <span>{d.info.address}</span>;
                 }) }
             </div >
         );
