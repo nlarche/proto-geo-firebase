@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import firebase from 'firebase';
 import GeoFire from 'geofire';
@@ -36,27 +36,50 @@ class App extends React.Component {
             data: []
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleResult = this.handleResult.bind(this);
+        this.handleEnter = this.handleEnter.bind(this);
+        this.handleExit = this.handleExit.bind(this);
     }
-    handleResult(key, location, distance) {
+    handleEnter(key, location, distance) {
 
-        const data = this.state.data;
         const lat = location[0];
         const long = location[1];
+        const _key = key;
 
         firebaseRef.child("locations").child(key).once("value", (dataSnapshot) => {
 
             const location = dataSnapshot.val();
 
-            data.push({
-                latitude: lat,
-                longitude : long,
-                location : location
+            this.setState({
+                data: [...this.state.data, {
+                    key: _key,
+                    latitude: lat,
+                    longitude: long,
+                    location: location
+                }]
             });
-
-            this.setState({ data: data });
-
         });
+    }
+    handleExit(key, location, distance) {
+
+        const data = this.state.data;
+        const index = data.findIndex((e) => {
+            return e.key = key;
+        });
+
+        if (index === 0) {
+            this.setState({
+                data: [
+                    ...data.slice(index + 1)
+                ]
+            });
+        } else {
+            this.setState({
+                data: [
+                    ...data.slice(start, index),
+                    ...data.slice(index + 1)
+                ]
+            });
+        }
     }
     handleSubmit(e) {
         e.preventDefault();
@@ -64,33 +87,37 @@ class App extends React.Component {
         this.refs.form.reset();
         this.refs.input.focus();
 
-        this.setState({ data: [] });
-
         geocoder(text, (coords) => {
 
-            geoQuery.updateCriteria({
-                center: [coords[0].latitude, coords[0].longitude],
-            });
+            const lat = coords[0].latitude;
+            const lng = coords[0].longitude;
+
+            this.updatePosition(lat, lng);
         });
     }
     componentDidMount() {
 
-        geoQuery.on("key_entered", this.handleResult);
+        geoQuery.on("key_entered", this.handleEnter);
+        geoQuery.on("key_exited", this.handleExit);
 
         currentPosition((position) => {
 
-            geoQuery.updateCriteria({
-                center: [position.latitude, position.longitude],
-            });
+            this.updatePosition(position.latitude, position.longitude);
         });
     }
+    updatePosition(lat, lng) {
+        this.setState({ center: { lat: lat, lng: lng } });
 
+        geoQuery.updateCriteria({
+            center: [lat, lng],
+        });
+    }
     render() {
         return (
             <div>
                 <form ref="form" onSubmit={ this.handleSubmit }>
                     <input type="text" ref="input" placeholder="address" />
-                </form>             
+                </form>
                 <GoogleMap
                     bootstrapURLKeys={{
                         key: GOOGLE_API_KEY,
@@ -98,19 +125,24 @@ class App extends React.Component {
                     }}
                     defaultCenter={ this.props.center }
                     defaultZoom={ this.props.zoom}
+                    onBoundsChange={this._onBoundsChange}
+                    center={this.state.center}
                     >
                     { this.state.data.map((d) => {
-                        return <div lat={d.latitude} lng={d.longitude}>{d.location.info.address}</div>;
+                        return <div key={d.key}
+                            lat={d.latitude}
+                            lng={d.longitude}>
+                            {d.location.info.address}
+                        </div>;
                     }) }
                 </GoogleMap>
-
             </div >
         );
     }
 }
 App.defaultProps = {
     center: { lat: 48.856614, lng: 2.3522219000000177 },
-    zoom: 8,
+    zoom: 10,
 };
 
 export default App;
