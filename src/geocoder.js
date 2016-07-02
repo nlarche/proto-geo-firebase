@@ -7,7 +7,7 @@ const geo = geocoder({
 
 export default function getCoordinates(adresse, callBack) {
     return geo.find(adresse, function (err, res) {
-        callBack(res.map(function (geoplace) {
+        callBack(res && res.map(function (geoplace) {
             return {
                 latitude: geoplace.location.lat,
                 longitude: geoplace.location.lng,
