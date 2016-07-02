@@ -1,5 +1,5 @@
 var path = require('path');
- 
+
 var config = {
   context: path.join(__dirname, 'src'),
   entry: [
@@ -16,6 +16,12 @@ var config = {
         exclude: /node_modules/,
         loaders: ['babel', 'eslint'],
       },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+      },
+      { test: /\.svg/, loader: 'svg-url-loader' },
     ],
   },
   resolveLoader: {
@@ -29,12 +35,12 @@ var config = {
     ],
   },
   devtool: 'source-map',
-    devServer: {
-        contentBase: "./www",
-        colors: true,
-        historyApiFallback: true,
-        inline: true,
-        port: 3001,
-    }
+  devServer: {
+    contentBase: "./www",
+    colors: true,
+    historyApiFallback: true,
+    inline: true,
+    port: 3001,
+  }
 };
 module.exports = config;

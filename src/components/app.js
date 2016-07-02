@@ -2,15 +2,14 @@ import React, { PropTypes } from 'react';
 
 import firebase from 'firebase';
 import GeoFire from 'geofire';
-import GoogleMap from 'google-map-react';
 
 import init from '../initData.js';
 import currentPosition from '../currentPosition.js';
 import geocoder from '../geocoder.js';
 
-import MapMarker from './map-marker.js';
+import Map from './google-map-react.js';
 
-import { FIREBASE_API_KEY, FIREBASE_URL, GOOGLE_API_KEY } from '../configuration.js';
+import { FIREBASE_API_KEY, FIREBASE_URL } from '../configuration.js';
 
 // Initialize the Firebase SDK
 firebase.initializeApp({
@@ -120,30 +119,15 @@ class App extends React.Component {
                 <form ref="form" onSubmit={ this.handleSubmit }>
                     <input type="text" ref="input" placeholder="address" />
                 </form>
-                <GoogleMap
-                    bootstrapURLKeys={{
-                        key: GOOGLE_API_KEY,
-                        language: 'fr',
-                    }}
-                    defaultCenter={ this.props.center }
-                    defaultZoom={ this.props.zoom}
-                    onBoundsChange={this._onBoundsChange}
-                    center={this.state.center}
-                    >
-                    { this.state.data.map((d) => {
-                        return <MapMarker key={d.key}
-                            lat={d.latitude}
-                            lng={d.longitude}
-                            marker={d}
-                            />;
-                    }) }
-                </GoogleMap>
+                <div>
+                    <Map {...this.state} {...this.props} />
+                </div>
             </div >
         );
     }
 }
 App.defaultProps = {
-    center: { lat: 48.856614, lng: 2.3522219000000177 },
+    defaultCenter: { lat: 48.856614, lng: 2.3522219000000177 },
     zoom: 10,
 };
 
