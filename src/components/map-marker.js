@@ -8,9 +8,9 @@ export default class MapMarker extends React.Component {
 
     }
     render() {
-
+       const style = this.props.$hover ? Style.markerHover : Style.marker;
         return (
-            <div className={Style.marker}>
+            <div className={style}>
             </div>
         );
     }

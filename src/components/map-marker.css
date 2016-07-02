@@ -1,12 +1,14 @@
 .marker {
   background: url('../image/marker.svg');    
-  position: 'absolute';
   width: 20;
   height: 20;
+  
 }
 
-
-svg:hover #marker { 
-  fill: red; 
+.markerHover {
+  background: url('../image/marker.svg');    
+  width: 25;
+  height: 25;  
 }
+
 
