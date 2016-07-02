@@ -1,0 +1,31 @@
+.searchBox {
+  display: flex;
+  width: 400px;
+}
+
+.searchBoxInput {
+    background: #FFF;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-sizing: border-box;
+    border-width: 0;
+    color: #000;
+    font-size: 16px;
+    height: 40px;
+    padding: 5px 16px;
+    outline: none;
+    font-weight: 300;
+    vertical-align: baseline;
+    width: 80%;
+}
+
+.searchBoxInput:hover {   
+    box-shadow: 0 1px 2px rgba(333,21,121,0.3);
+}
+
+.searchBoxInput:focus {   
+    box-shadow: 0 1px 2px rgba(31,1,1,0.3);
+    width: 100%;
+    transition: all .2s ease-in-out;
+}
+
